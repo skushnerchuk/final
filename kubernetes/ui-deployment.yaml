@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: ui
+  labels:
+    app: crawler
+    component: ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crawler
+      component: ui
+  template:
+    metadata:
+      name: ui-pod
+      labels:
+        app: crawler
+        component: ui
+    spec:
+      containers:
+      - image: 4babushkin/crawler-ui
+        name: ui
+
