@@ -2,11 +2,12 @@
 # GKE Cluster
 #
 resource "google_container_cluster" "cluster" {
-  name               = "${var.cluster_name}"
-  zone               = "${var.cluster_zone}"
+  name = "${var.cluster_name}"
+  zone = "${var.cluster_zone}"
   #min_master_version = "${var.cluster_k8s_version}"
-  
-  enable_legacy_abac = true
+
+  #устаревшие права доступа
+  enable_legacy_abac = "${var.legacy_abac}"
 
   addons_config {
 
@@ -23,6 +24,7 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
+
   node_pool {
     name               = "default-pool"
     initial_node_count = "${var.initial_node_count}"
@@ -37,7 +39,7 @@ resource "google_container_cluster" "cluster" {
     }
 
     node_config {
-      preemptible  = false
+      preemptible  = "${var.is_preemptible}"
       disk_size_gb = "${var.disk_size_gb}"
       disk_type    = "${var.disk_type}"
 
@@ -69,7 +71,7 @@ resource "google_container_cluster" "cluster" {
   #   }
 
   #   node_config {
-  #     preemptible  = false
+  #     preemptible  = "${var.is_preemptible}"
   #     disk_size_gb = 40
   #     disk_type    = "${var.disk_type}"
 
@@ -90,25 +92,3 @@ resource "google_container_cluster" "cluster" {
 
 }
 
-#
-# Output for K8S
-#
-output "client_certificate" {
-  value = "${google_container_cluster.cluster.master_auth.0.client_certificate}"
-  # sensitive = true
-}
-
-output "client_key" {
-  value = "${google_container_cluster.cluster.master_auth.0.client_key}"
-  # sensitive = true
-}
-
-output "cluster_ca_certificate" {
-  value = "${google_container_cluster.cluster.master_auth.0.cluster_ca_certificate}"
-  # sensitive = true
-}
-
-output "host" {
-  value = "${google_container_cluster.cluster.endpoint}"
-  # sensitive = true
-}

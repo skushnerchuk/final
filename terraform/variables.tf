@@ -42,6 +42,16 @@ variable "disk_type" {
 }
 
 variable "machine_type" {
-  # default = "g1-small"
-  default = "n1-standard-1"
+  default = "g1-small"
+  # default = "n1-standard-1"
 }
+
+variable "is_preemptible" {
+  default = "true"
+}
+
+#устаревшие права доступа
+variable "legacy_abac" {
+  default = "false"
+}
+
