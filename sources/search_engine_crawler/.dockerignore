@@ -1,0 +1,12 @@
+.github/
+.git/
+.env.*
+.gitignore
+Dockerfile
+docker-compose.yml
+.flake8
+.travis.yml
+README.md
+**/management
+nginx/
+fluentd/

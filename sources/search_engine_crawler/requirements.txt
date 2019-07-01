@@ -1,0 +1,6 @@
+beautifulsoup4
+requests
+pika
+structlog
+pymongo
+prometheus_client
