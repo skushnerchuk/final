@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: bot
+  labels:
+    app: crawler
+    component: bot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crawler
+      component: bot
+  template:
+    metadata:
+      name: bot-pod
+      labels:
+        app: crawler
+        component: bot
+    spec:
+      containers:
+      - image: 4babushkin/crawler-bot
+        name: bot
+

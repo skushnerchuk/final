@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: mongo
+  labels:
+    app: crawler
+    component: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawler
+      component: mongo
+  template:
+    metadata:
+      name: mongo
+      labels:
+        app: crawler
+        component: mongo
+    spec:
+      containers:
+      - image: mongo:3.2
+        name: mongo
+        volumeMounts:
+        - name: mongo-gce-pd-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-gce-pd-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc-dynamic
