@@ -1,25 +1,25 @@
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: ui
+  name: rabbit
   labels:
     app: crawler
-    component: ui
+    component: rabbit
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: crawler
-      component: ui
+      component: rabbit
   template:
     metadata:
-      name: ui-pod
+      name: rabbit-pod
       labels:
         app: crawler
-        component: ui
+        component: rabbit
     spec:
       containers:
-      - image: 4babushkin/crawler_ui
-        name: ui
+      - image: rabbitmq:3.8-rc
+        name: rabbit
 

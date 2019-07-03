@@ -20,6 +20,10 @@ spec:
         component: bot
     spec:
       containers:
-      - image: 4babushkin/crawler-bot
+      - image: 4babushkin/crawler_bot
         name: bot
-
+        env: 
+        - name: MONGO
+          value: "mongo"
+        - name: RMQ_HOST
+          value: "rabbit"
