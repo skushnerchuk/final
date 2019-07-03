@@ -7,23 +7,35 @@ metadata:
     app: crawler
     component: bot
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: crawler
       component: bot
   template:
     metadata:
-      name: bot-pod
+      name: bot
       labels:
         app: crawler
         component: bot
     spec:
       containers:
-      - image: 4babushkin/crawler_bot
-        name: bot
-        env: 
-        - name: MONGO
-          value: "mongo"
-        - name: RMQ_HOST
-          value: "rabbit"
+        - image: 4babushkin/crawler_bot
+          name: bot
+          env:
+            - name: MONGO
+              value: mongodb
+            - name: MONGO_PORT
+              value: "27017"
+            - name: RMQ_HOST
+              value: rabbitmq
+            - name: RMQ_QUEUE
+              value: crawler
+            - name: RMQ_USERNAME
+              value: rabbitmq
+            - name: RMQ_PASSWORD
+              value: rabbitmq
+            - name: URL
+              value: https://vitkhab.github.io/search_engine_test_site/
+            - name: EXCLUDE_URLS
+              value: ".*github.com"

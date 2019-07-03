@@ -2,24 +2,32 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: rabbit
+  name: rabbitmq
   labels:
     app: crawler
-    component: rabbit
+    component: rabbitmq
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: crawler
-      component: rabbit
+      component: rabbitmq
   template:
     metadata:
-      name: rabbit-pod
+      name: rabbitmq
       labels:
         app: crawler
-        component: rabbit
+        component: rabbitmq
     spec:
       containers:
-      - image: rabbitmq:3.8-rc
-        name: rabbit
-
+        - image: rabbitmq:3.8-rc
+          name: rabbitmq
+          env:
+            - name: RABBITMQ_ERLANG_COOKIE
+              value: SWQOKODSQALRPCLNMEQG
+            - name: RABBITMQ_DEFAULT_PASS
+              value: rabbitmq
+            - name: RABBITMQ_DEFAULT_VHOST
+              value: /
+            - name: RABBITMQ_DEFAULT_USER
+              value: rabbitmq

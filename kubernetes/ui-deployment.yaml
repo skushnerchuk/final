@@ -7,19 +7,23 @@ metadata:
     app: crawler
     component: ui
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: crawler
       component: ui
   template:
     metadata:
-      name: ui-pod
+      name: ui
       labels:
         app: crawler
         component: ui
     spec:
       containers:
-      - image: 4babushkin/crawler_ui
-        name: ui
-
+        - image: 4babushkin/crawler_ui
+          name: ui
+          env:
+            - name: MONGO
+              value: mongodb
+            - name: MONGO_PORT
+              value: "27017"

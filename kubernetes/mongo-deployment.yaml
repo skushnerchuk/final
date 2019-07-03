@@ -20,12 +20,12 @@ spec:
         component: mongo
     spec:
       containers:
-      - image: mongo:3.2
-        name: mongo
-        volumeMounts:
-        - name: mongo-gce-pd-storage
-          mountPath: /data/db
-      volumes:
-      - name: mongo-gce-pd-storage
-        persistentVolumeClaim:
-          claimName: mongo-pvc-dynamic
+        - image: mongo:4.2-rc
+          name: mongo
+      #     volumeMounts:
+      #       - name: mongo-gce-pd-storage
+      #         mountPath: /data/db
+      # volumes:
+      #   - name: mongo-gce-pd-storage
+      #     persistentVolumeClaim:
+      #       claimName: mongo-pvc-dynamic

@@ -8,9 +8,9 @@ metadata:
     component: mongo
 spec:
   ports:
-  - port: 27017
-    protocol: TCP
-    targetPort: 27017
+    - port: 27017
+      protocol: TCP
+      targetPort: 27017
   selector:
     app: crawler
     component: mongo
