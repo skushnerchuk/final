@@ -16,7 +16,7 @@ services:
       RMQ_USERNAME: rabbitmq
       RMQ_PASSWORD: rabbitmq
       URL: "https://vitkhab.github.io/search_engine_test_site/"
-      EXCLUDE_URLS: []
+      EXCLUDE_URLS: ".*github.com"
 
   ui:
     build: ./search_engine_ui
