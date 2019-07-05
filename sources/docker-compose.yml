@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+
+  crawler:
+    build: ./search_engine_crawler
+    container_name: crawler
+    depends_on:
+      - rabbitmq
+      - mongodb
+    environment:
+      MONGO: mongodb
+      MONGO_PORT: 27017
+      RMQ_HOST: rabbitmq
+      RMQ_QUEUE: crawler
+      RMQ_USERNAME: rabbitmq
+      RMQ_PASSWORD: rabbitmq
+      URL: "https://vitkhab.github.io/search_engine_test_site/"
+      EXCLUDE_URLS: ".*github.com"
+
+  ui:
+    build: ./search_engine_ui
+    container_name: crawler_ui
+    environment:
+      MONGO: mongodb
+      MONGO_PORT: 27017
+    ports:
+      - "8000:8000"
+
+
+  rabbitmq:
+    image: rabbitmq:3.8-rc
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  mongodb:
+    image: mongo:4.2-rc
+    ports:
+      - "27017:27017"
