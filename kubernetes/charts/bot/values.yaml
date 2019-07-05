@@ -1,0 +1,41 @@
+---
+replicaCount: 1
+image:
+  repository: 4babushkin/crawler_bot
+  tag: latest
+service:
+  name: bot
+  type: NodePort
+  externalPort: 8000
+  internalPort: 80
+
+# Database host configuration
+mongodbHost:
+# Database port configuration
+mongodbPort:
+# rabbitmq host configuration
+rabbitmqHost:
+
+rabbitmqQueue:
+
+rabbitmqUsername:
+
+rabbitmqPassword:
+
+botUrl:
+
+botExcludeUrls: ".*github.com"
+
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

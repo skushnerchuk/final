@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "ui.fullname" . }}
+  labels:
+    app: crawler
+    component: ui
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: crawler
+      component: ui
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: ui
+      labels:
+        app: crawler
+        component: ui
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          name: ui
+          env:
+            - name: MONGO
+              value: {{ .Values.mongodbHost | default (printf "%s-mongodb" .Release.Name) }}
+            - name: MONGO_PORT
+              value: {{ .Values.mongodbPort | default "27017" | quote }}
