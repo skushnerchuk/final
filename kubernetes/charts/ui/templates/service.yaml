@@ -5,17 +5,17 @@ metadata:
   name: {{ template "ui.fullname" . }}
   labels:
     app: crawler
-    component: ui
+    component: {{ template "ui.name" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort | default "80" | quote }}
+    - port: 80
       protocol: TCP
-      targetPort: {{ .Values.service.internalPort | default "8000" | quote }}
+      targetPort: 8000
       name: {{ .Values.service.name }}
   selector:
     app: crawler
-    component: ui
+    component: {{ template "ui.name" . }}
     release: {{ .Release.Name }}

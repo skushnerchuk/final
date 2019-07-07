@@ -23,7 +23,9 @@ resource "google_container_cluster" "cluster" {
       disabled = false
     }
   }
-
+  provisioner "local-exec" {
+    command = "gcloud container clusters get-credentials ${var.cluster_name} --zone ${var.cluster_zone} --project ${var.project}"
+  }
 
   node_pool {
     name               = "default-pool"

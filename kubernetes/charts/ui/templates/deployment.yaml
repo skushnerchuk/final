@@ -5,26 +5,26 @@ metadata:
   name: {{ template "ui.fullname" . }}
   labels:
     app: crawler
-    component: ui
+    component: {{ template "ui.name" . }}
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: crawler
-      component: ui
+      component: {{ template "ui.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
-      name: ui
+      name: {{ template "ui.name" . }}
       labels:
         app: crawler
-        component: ui
+        component: {{ template "ui.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          name: ui
+          name: {{ .Chart.Name }}
           env:
             - name: MONGO
               value: {{ .Values.mongodbHost | default (printf "%s-mongodb" .Release.Name) }}

@@ -5,9 +5,6 @@ image:
   tag: latest
 service:
   name: bot
-  type: NodePort
-  externalPort: 8000
-  internalPort: 80
 
 # Database host configuration
 mongodbHost:
@@ -25,8 +22,6 @@ rabbitmqPassword:
 botUrl:
 
 botExcludeUrls: ".*github.com"
-
-
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

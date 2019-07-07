@@ -5,26 +5,26 @@ metadata:
   name: {{ template "bot.fullname" . }}
   labels:
     app: crawler
-    component: bot
+    component: {{ template "bot.name" . }}
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: crawler
-      component: bot
+      component: {{ template "bot.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
-      name: bot
+      name: {{ template "bot.name" . }}
       labels:
         app: crawler
-        component: bot
+        component: {{ template "bot.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - image: 4babushkin/crawler_bot
-          name: bot
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          name: {{ .Chart.Name }}
           env:
             - name: MONGO
               value: {{ .Values.mongodbHost | default (printf "%s-mongodb" .Release.Name) }}

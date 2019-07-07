@@ -4,12 +4,12 @@ metadata:
   name: {{ template "bot.fullname" . }}
   labels:
     app: crawler
-    component: bot
+    component: {{ template "bot.name" . }}
     release: {{ .Release.Name }}
 spec:
   ports:
   - port: 8000
   selector:
     app: crawler
-    component: bot
+    component: {{ template "bot.name" . }}
     release: {{ .Release.Name }}
