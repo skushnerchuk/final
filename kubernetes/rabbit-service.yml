@@ -2,20 +2,20 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbit
+  name: rabbitmq
   labels:
     app: crawler
-    component: rabbit-svc
+    component: rabbitmq
 spec:
   ports:
-  - name: epmd
-    port: 5672
-  - name: amqp
-    port: 4369
-  - name: dist
-    port: 5671
-  - name: stats
-    port: 25672
+    - name: clients
+      port: 5672
+      protocol: TCP
+      targetPort: 5672
+    - name: mgmt
+      port: 15672
+      protocol: TCP
+      targetPort: 15672
   selector:
     app: crawler
-    component: rabbit
+    component: rabbitmq
