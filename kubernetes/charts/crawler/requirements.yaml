@@ -1,0 +1,14 @@
+
+dependencies:
+  - name: ui
+    version: 1.0.0
+    repository: file://../ui
+  - name: bot
+    version: 1.0.0
+    repository: file://../bot
+  - name: rabbitmq
+    version: 6.1.4
+    repository: https://kubernetes-charts.storage.googleapis.com
+  - name: mongodb
+    version: 6.0.0
+    repository: https://kubernetes-charts.storage.googleapis.com
