@@ -23,6 +23,10 @@ helm init --service-account tiller
 ```
 helm install stable/nginx-ingress --name nginx
 ```
+Обновлим зависимости чарта приложение
+```
+helm dep update
+```
 Запускаем приложение
 ```
 helm install --name test crawler/
