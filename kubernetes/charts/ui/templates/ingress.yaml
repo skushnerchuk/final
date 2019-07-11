@@ -10,14 +10,10 @@ metadata:
 spec:
   rules:
   - host: {{ .Values.ingress.host | default .Release.Name }}
-    http:
+  - http:
       paths:
         - path: /
           backend:
             serviceName: {{ template "ui.fullname" . }}
             servicePort: {{ .Values.service.externalPort }}
-  {{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
 {{- end -}}

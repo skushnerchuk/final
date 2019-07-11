@@ -1,3 +1,10 @@
+.env
+build_info.txt
+
+
+# python
+*.pyc
+*.pyo
 
 ### terraform
 
@@ -7,3 +14,6 @@
 *.tfvars
 .terraform/
 .idea/
+
+# Chart 
+**/charts/*.tgz

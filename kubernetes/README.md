@@ -1,8 +1,8 @@
 ## Здесь лежат скрипты и конфиги Kubernetes
 
-Начал делать контроллеры для Kubernetes по образу и подобию как у нас было в ДЗ
+Configuration to provision the application onto Kubernetes.
 
-Сделал
+Сделал контроллеры для Kubernetes
 
 * `tiller.yaml` - Tiller - это аддон Kubernetes, т.е. Pod, который общается с API Kubernetes.
   Для этого понадобится ему выдать ServiceAccount и назначить роли RBAC, необходимые для работы. 
@@ -19,8 +19,13 @@
 kubectl apply -f tiller.yaml
 helm init --service-account tiller
 ```
+Из Helm-чарта установим ingress-контроллер nginx
 ```
-$ helm install --name test crawler/
+helm install stable/nginx-ingress --name nginx
+```
+Запускаем приложение
+```
+helm install --name test crawler/
 NAME:   test
 LAST DEPLOYED: Thu Jul 11 13:46:28 2019
 NAMESPACE: default
@@ -63,7 +68,25 @@ test-bot       0/1    1           0          1s
 test-rabbitmq  0/1    1           0          1s
 test-ui        0/1    1           0          1s
 ```
-стоп 
+узнаем ip
 ```
+kubectl get svc
+NAME                                  TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                        AGE
+kubernetes                            ClusterIP      10.39.240.1     <none>          443/TCP                        63m
+nginx-nginx-ingress-controller        LoadBalancer   10.39.241.118   35.187.125.93   80:32260/TCP,443:30733/TCP     7m1s
+nginx-nginx-ingress-default-backend   ClusterIP      10.39.243.80    <none>          80/TCP                         7m
+test-bot                              ClusterIP      10.39.240.135   <none>          8000/TCP                       38m
+test-mongodb                          ClusterIP      10.39.244.235   <none>          27017/TCP                      38m
+test-rabbitmq                         ClusterIP      10.39.254.159   <none>          5672/TCP,25672/TCP,15672/TCP   38m
+test-ui                               NodePort       10.39.248.99    <none>          8000:30892/TCP                 38m
+```
+заходим по адресу  http://35.187.125.93
+
+удалить
+```
+helm del test
 helm del --purge test
+helm delete nginx
 ```
+
+
