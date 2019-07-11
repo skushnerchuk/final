@@ -7,10 +7,10 @@ ui:
     name: ui
     type: NodePort
     externalPort: 8000
-    internalPort: 80
+    internalPort: 8000
 
   # Database host configuration
-  mongodbHost:
+  mongodbHost: 
   # Database port configuration
   mongodbPort:
 
@@ -25,6 +25,7 @@ ui:
     # requests:
     #  cpu: 100m
     #  memory: 128Mi
+
 bot:
   replicaCount: 1
   image:
@@ -34,20 +35,16 @@ bot:
     name: bot
 
   # Database host configuration
-  mongodbHost:
+  mongodbHost: 
   # Database port configuration
-  mongodbPort:
+  mongodbPort: 27017
+
   # rabbitmq host configuration
-  rabbitmqHost:
-
-  rabbitmqQueue:
-
-  rabbitmqUsername:
-
-  rabbitmqPassword:
-
-  botUrl:
-
+  rabbitmqHost: 
+  rabbitmqQueue: crawler
+  rabbitmqUsername: rabbitmq
+  rabbitmqPassword: rabbitmq
+  botUrl: "https://vitkhab.github.io/search_engine_test_site/"
   botExcludeUrls: ".*github.com"
 
   resources: {}
@@ -61,16 +58,26 @@ bot:
     # requests:
     #  cpu: 100m
     #  memory: 128Mi
-mongodb:
-  usePassword: false
 
 
 rabbitmq:
+  replicaCount: 1
+  image:
+    repository: rabbitmq:3.8-rc
+
+  service:
+    name: rabbitmq
+    type: ClusterIP
+    port: 5672
+    distPort: 25672
+    managerPort: 15672
+
   rabbitmq:
     username: rabbitmq
     password: rabbitmq
+    vhost: /
     erlangCookie: SWQOKODSQALRPCLNMEQG
-
+    
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -80,5 +87,5 @@ rabbitmq:
     #  cpu: 100m
     #  memory: 128Mi
     # requests:
-    #   cpu: 100m
-    #   memory: 256Mi
+    #  cpu: 100m
+    #  memory: 128Mi

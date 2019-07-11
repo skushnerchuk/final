@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "rabbitmq.fullname" . }}
+  labels:
+    app: crawler
+    component: {{ template "rabbitmq.name" . }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: crawler
+      component: {{ template "rabbitmq.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ template "rabbitmq.name" . }}
+      labels:
+        app: crawler
+        component: {{ template "rabbitmq.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - image: "{{ .Values.image.repository }}"
+          name: {{ .Chart.Name }}
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "{{ .Values.rabbitmq.username }}"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "{{ .Values.rabbitmq.password }}"
+            - name: RABBITMQ_DEFAULT_VHOST
+              value: "{{ .Values.rabbitmq.vhost }}"
+            - name: RABBITMQ_ERLANG_COOKIE
+              value: "{{ .Values.rabbitmq.erlangCookie }}"

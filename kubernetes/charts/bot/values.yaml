@@ -7,20 +7,16 @@ service:
   name: bot
 
 # Database host configuration
-mongodbHost:
+mongodbHost: 
 # Database port configuration
-mongodbPort:
+mongodbPort: 27017
+
 # rabbitmq host configuration
-rabbitmqHost:
-
-rabbitmqQueue:
-
-rabbitmqUsername:
-
-rabbitmqPassword:
-
-botUrl:
-
+rabbitmqHost: 
+rabbitmqQueue: crawler
+rabbitmqUsername: rabbitmq
+rabbitmqPassword: rabbitmq
+botUrl: "https://vitkhab.github.io/search_engine_test_site/"
 botExcludeUrls: ".*github.com"
 
 resources: {}

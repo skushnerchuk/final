@@ -1,29 +1,21 @@
 ---
 replicaCount: 1
 image:
-  repository: 4babushkin/crawler_ui
-  tag: latest
+  repository: rabbitmq:3.8-rc
+
 service:
-  name: ui
-  type: NodePort
-  externalPort: 8000
-  internalPort: 8000
+  name: rabbitmq
+  type: ClusterIP
+  port: 5672
+  distPort: 25672
+  managerPort: 15672
 
-# Database host configuration
-mongodbHost: 
-# Database port configuration
-mongodbPort:
-
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-  tls:
-    # Secrets must be manually created in the namespace.
-    # - secretName: chart-example-tls
-    #   hosts:
-    #     - chart-example.local
-
+rabbitmq:
+  username: rabbitmq
+  password: rabbitmq
+  vhost: /
+  erlangCookie: SWQOKODSQALRPCLNMEQG
+  
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

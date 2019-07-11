@@ -33,12 +33,12 @@ spec:
             - name: RMQ_HOST
               value: {{ .Values.rabbitmqHost | default (printf "%s-rabbitmq" .Release.Name) }}
             - name: RMQ_QUEUE
-              value: {{ .Values.rabbitmqQueue | default (printf "%s-crawler" .Release.Name) }}
+              value: {{ .Values.rabbitmqQueue }}
             - name: RMQ_USERNAME
-              value: {{ .Values.rabbitmqUsername | default (printf "%s-rabbitmq" .Release.Name) }}
+              value: {{ .Values.rabbitmqUsername }}
             - name: RMQ_PASSWORD
-              value: {{ .Values.rabbitmqPassword | default (printf "%s-rabbitmq" .Release.Name) }}
+              value: {{ .Values.rabbitmqPassword }}
             - name: URL
-              value: {{ .Values.botUrl | default (printf "%s-https://vitkhab.github.io/search_engine_test_site/" .Release.Name) }}
+              value: {{ .Values.botUrl }}
             - name: EXCLUDE_URLS
               value: {{ .Values.botExcludeUrls | default ".*github.com" | quote }}
