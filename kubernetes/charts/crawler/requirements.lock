@@ -6,10 +6,10 @@ dependencies:
   repository: file://../bot
   version: 1.0.0
 - name: rabbitmq
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 6.1.4
+  repository: file://../rabbitmq
+  version: "3.8"
 - name: mongodb
   repository: https://kubernetes-charts.storage.googleapis.com
-  version: 6.0.0
-digest: sha256:770cfb59984087ee5e917691f4150edeb05e4ae22f62bcb2c172778d85a3e885
-generated: "2019-07-08T03:43:40.774221424+07:00"
+  version: 0.4.18
+digest: sha256:446fd2f20d5f3ba27cf25f4ca313574c471746ffa1d35271c27e86d2c52c9b87
+generated: "2019-07-11T10:51:05.463507952+07:00"

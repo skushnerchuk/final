@@ -1,0 +1,7 @@
+name: rabbitmq
+version: 3.8
+description: RabbitMQ
+maintainers:
+- name: 
+  email: 
+appVersion: 1.0.0
