@@ -8,7 +8,7 @@ Terraform для развертывания кластера Kubernetes в GKE
 Файла состояния который храниться удаленно в Remote State Management гарантирует что у всех всегда есть самый последний файл состояния.  Terraform Remote State Management также блокирует файл состояния во время внесения изменений. 
 
 Что бы запустить
-* Step 0 - Sign up for a Terraform Cloud account here
+* Step 0 - Sign up for a Terraform Cloud account [here](https://app.terraform.io/signup)
 
 * Step 1 -  An email will be sent to you, follow the link to activate your free Terraform Cloud account.
 
