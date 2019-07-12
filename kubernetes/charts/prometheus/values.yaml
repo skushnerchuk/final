@@ -634,7 +634,7 @@ server:
     ## Must be provided if Ingress is enabled
     ##
     hosts:
-      - prometheus
+      - prometheus-server
     #   - prometheus.domain.com
     #   - domain.com/prometheus
 
@@ -1230,7 +1230,7 @@ serverFiles:
             action: replace
             target_label: kubernetes_pod_name
 
-      - job_name: 'ui-endpoints'
+      - job_name: 'crawler-endpoints-ui'
         kubernetes_sd_configs:
           - role: endpoints
         relabel_configs:
@@ -1244,7 +1244,7 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_name]
             target_label: kubernetes_name
 
-      - job_name: 'bot-endpoints'
+      - job_name: 'crawler-endpoints-bot'
         kubernetes_sd_configs:
           - role: endpoints
         relabel_configs:
@@ -1253,6 +1253,51 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_label_component]
             action: keep
             regex: bot
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: kubernetes_name
+
+      - job_name: 'crawler-env-production'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_service_label_component, __meta_kubernetes_namespace]
+            action: keep
+            regex: (bot|ui)+;production
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: kubernetes_name
+
+      - job_name: 'crawler-env-staging'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_service_label_component, __meta_kubernetes_namespace]
+            action: keep
+            regex: (bot|ui)+;staging
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: kubernetes_name
+
+      - job_name: 'crawler-env-test'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: drop
+            regex: (production|staging)+
+          - source_labels: [__meta_kubernetes_service_label_component, __meta_kubernetes_namespace]
+            action: keep
+            regex: (bot|ui)+;.+
           - source_labels: [__meta_kubernetes_namespace]
             target_label: kubernetes_namespace
           - source_labels: [__meta_kubernetes_service_name]

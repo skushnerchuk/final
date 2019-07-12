@@ -1,0 +1,4 @@
+project = "docker-12345"
+region = "europe-west1"
+cluster_zone = "europe-west1-b"
+initial_node_count = 2
