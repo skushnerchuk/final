@@ -20,7 +20,7 @@ spec:
         component: ui
     spec:
       containers:
-        - image: 4babushkin/crawler_ui
+        - image: drcoyote/crawler_ui
           name: ui
           env:
             - name: MONGO

@@ -1,14 +1,14 @@
 ui:
   replicaCount: 1
   image:
-    repository: 4babushkin/crawler_ui
+    repository: drcoyote/crawler_ui
     tag: latest
   service:
     name: ui
     type: NodePort
     externalPort: 8000
   # Database host configuration
-  mongodbHost: 
+  mongodbHost:
   # Database port configuration
   mongodbPort:
 
@@ -20,14 +20,14 @@ ui:
 bot:
   replicaCount: 1
   image:
-    repository: 4babushkin/crawler_bot
+    repository: drcoyote/crawler
     tag: latest
   service:
     name: bot
   # Database host configuration
-  mongodbHost: 
+  mongodbHost:
   # Database port configuration
-  mongodbPort: 
+  mongodbPort:
 
 rabbitmq:
   replicaCount: 1

@@ -1,18 +1,18 @@
 ---
 replicaCount: 1
 image:
-  repository: 4babushkin/crawler_bot
+  repository: drcoyote/crawler
   tag: latest
 service:
   name: bot
 
 # Database host configuration
-mongodbHost: 
+mongodbHost:
 # Database port configuration
 mongodbPort: 27017
 
 # rabbitmq host configuration
-rabbitmqHost: 
+rabbitmqHost:
 rabbitmqQueue: crawler
 rabbitmqUsername: rabbitmq
 rabbitmqPassword: rabbitmq
