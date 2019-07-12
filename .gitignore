@@ -15,5 +15,5 @@ build_info.txt
 .terraform/
 .idea/
 
-# Chart 
-**/charts/*.tgz
+# Chart
+*.tgz

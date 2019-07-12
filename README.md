@@ -34,9 +34,8 @@ cd ../kubernetes/
 kubectl apply -f tiller.yaml
 helm init --service-account tiller
 helm install stable/nginx-ingress --name nginx
-cd charts/crawler
-helm dep update
-helm install --name test .
+helm dep update charts/crawler
+helm install --name test charts/crawler
 kubectl get svc
 ```
 Остановка:
