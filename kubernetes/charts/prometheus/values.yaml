@@ -635,6 +635,7 @@ server:
     ##
     hosts:
       - prometheus-server
+      - prometheus-server.weisdd.space
     #   - prometheus.domain.com
     #   - domain.com/prometheus
 

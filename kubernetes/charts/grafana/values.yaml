@@ -102,6 +102,7 @@ ingress:
   path: /
   hosts:
     - grafana
+    - grafana.weisdd.space
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
