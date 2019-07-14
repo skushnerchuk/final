@@ -26,11 +26,11 @@ variable "initial_node_count" {
 }
 
 variable "autoscaling_min_node_count" {
-  default = 1
+  default = 2
 }
 
 variable "autoscaling_max_node_count" {
-  default = 2
+  default = 3
 }
 
 variable "disk_size_gb" {
@@ -42,8 +42,7 @@ variable "disk_type" {
 }
 
 variable "machine_type" {
-  default = "g1-small"
-  # default = "n1-standard-1"
+  default = "n1-standard-1"
 }
 
 variable "is_preemptible" {
@@ -54,4 +53,3 @@ variable "is_preemptible" {
 variable "legacy_abac" {
   default = "false"
 }
-

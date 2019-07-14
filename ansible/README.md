@@ -1,1 +1,0 @@
-здесь лежат ansible playbooks
