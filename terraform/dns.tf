@@ -3,7 +3,7 @@ resource "google_dns_record_set" "nginx" {
   managed_zone = var.managed_zone
   type         = "A"
   ttl          = 60
-  rrdatas = ["${google_compute_address.lb.address}"]
+  rrdatas      = ["${google_compute_address.lb.address}"]
 }
 
 resource "google_dns_record_set" "prometheus-server" {

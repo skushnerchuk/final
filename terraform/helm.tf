@@ -38,7 +38,7 @@ provider "helm" {
 }
 
 resource "google_compute_address" "lb" {
-  name = "lb"
+  name   = "lb"
   region = "${var.region}"
 }
 
@@ -47,7 +47,7 @@ resource "helm_release" "nginx" {
   chart = "stable/nginx-ingress"
 
   set_string {
-    name = "controller.service.loadBalancerIP"
+    name  = "controller.service.loadBalancerIP"
     value = "${google_compute_address.lb.address}"
   }
 
