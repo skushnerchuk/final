@@ -6,7 +6,7 @@ variable "project" {
 }
 
 variable "region" {
-  default = "eu-west1-d"
+  default = "europe-west1"
 }
 
 variable "cluster_name" {
@@ -52,4 +52,12 @@ variable "is_preemptible" {
 #устаревшие права доступа
 variable "legacy_abac" {
   default = "false"
+}
+
+variable "domain" {
+  default = "weisdd.space."
+}
+
+variable "managed_zone" {
+  default = "crawler"
 }
