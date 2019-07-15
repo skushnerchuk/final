@@ -6,9 +6,9 @@ terraform {
   required_version = ">=0.12,<0.13"
 
   backend "remote" {
-    organization = "devops_project" # org name from step 2.
+    organization = "devops_project"
     workspaces {
-      name = "crawler" # name for your app's state.
+      name = "crawler"
     }
   }
 }

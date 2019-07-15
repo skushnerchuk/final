@@ -33,26 +33,13 @@ cd terraform
 terraform init
 terraform apply
 cd ../kubernetes/
-kubectl apply -f tiller.yaml
-helm init --service-account tiller
-helm install stable/nginx-ingress --name nginx
 helm upgrade prometheus charts/prometheus/ --install
 helm upgrade grafana charts/grafana/ --install
 helm dep update charts/crawler
 helm upgrade crawler charts/crawler/ --install
-kubectl get svc
 ```
 
 ### Ссылки на приложение и служебные сервисы
-В настоящий момент нет функционала по автоматическому провижионингу DNS, поэтому после запуска приложения необходимо вручную запросить IP loadbalancer'а:
-```bash
-$ kubectl get svc
-NAME                                  TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                        AGE
-nginx-nginx-ingress-controller        LoadBalancer   10.23.242.78    35.190.211.102   80:30470/TCP,443:30056/TCP     63s
-```
-Затем зайти в https://console.cloud.google.com/net-services/dns/zones/crawler?project=docker-239201 и обновить DNS-запись для weisdd.space.
-
-Ссылки:
 * http://weisdd.space - ui для бота;
 * http://grafana.weisdd.space - grafana;
 * http://prometheus-server.weisdd.space - prometheus.
