@@ -27,6 +27,8 @@ kibana:
     tag: "5.4.3"
   ingress:
     enabled: true
-    hosts: {kibana}
+    hosts: 
+      - kibana
+      - kibana.weisdd.space
   env:
     ELASTICSEARCH_URL: http://efk-elasticsearch:9200
