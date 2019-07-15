@@ -16,7 +16,7 @@ resource "google_container_cluster" "cluster" {
     }
 
     http_load_balancing {
-      disabled = false
+      disabled = true
     }
 
     kubernetes_dashboard {
