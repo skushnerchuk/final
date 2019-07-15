@@ -1,9 +1,9 @@
 # Выпускной проект курса "DevOps практики и инструменты"
 ## Общая информация
 Участники:
-* [skushnerchuk](https://github.com/skushnerchuk)
-* [4babushkin](https://github.com/4babushkin)
-* [weisdd](https://github.com/weisdd)
+* Кушнерчук Сергей Юрьевич [skushnerchuk](https://github.com/skushnerchuk)
+* Бабушкин Владимир Сергеевич [4babushkin](https://github.com/4babushkin)
+* Беляков Игорь Вячеславович [weisdd](https://github.com/weisdd)
 
 Задачи проекта:
 * автоматическое развертывание микросервисного приложения crawler ([backend](https://github.com/express42/search_engine_crawler), [frontend](https://github.com/express42/search_engine_ui));
