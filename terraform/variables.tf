@@ -42,7 +42,7 @@ variable "disk_type" {
 }
 
 variable "machine_type" {
-  default = "n1-standard-1"
+  default = "n1-standard-2"
 }
 
 variable "is_preemptible" {

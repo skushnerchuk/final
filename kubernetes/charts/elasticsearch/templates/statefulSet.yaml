@@ -21,8 +21,6 @@ spec:
         version: v5.6.4
         kubernetes.io/cluster-service: "true"
     spec:
-      nodeSelector:
-        elastichost: "true"
       containers:
       - image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         name: {{ template "es.fullname" . }}

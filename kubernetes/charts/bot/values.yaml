@@ -18,7 +18,7 @@ rabbitmqUsername: rabbitmq
 rabbitmqPassword: rabbitmq
 botUrl: "https://vitkhab.github.io/search_engine_test_site/"
 botExcludeUrls: ".*github.com"
-botCheckInterval: 120
+botCheckInterval: 300
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
