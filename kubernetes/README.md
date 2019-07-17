@@ -3,31 +3,28 @@
 cd terraform
 terraform init
 terraform apply
+```
+запуск Мониторинга (prometheus и grafana)
+* prometheus - сервер сбора
+* grafana - сервер визуализации метрик
+```
 cd ../kubernetes/
 helm upgrade prometheus charts/prometheus/ --install
 helm upgrade grafana charts/grafana/ --install
-
-
+```
+Запуск Логирования (elasticsearch, fluentd и kibana)
+* ElasticSearch - база данных + поисковый движок
+* Fluentd - шипер (отправитель) и агрегатор логов
+* Kibana - веб-интерфейс для запросов в хранилище и отображения их результатов
+```
 helm dep update charts/efk
 helm upgrade efk charts/efk/ --install
-
+```
+Запуск нашего приложения
+```
 helm dep update charts/crawler
 helm upgrade crawler charts/crawler/ --install
 ```
-
-Найти IP-адрес, выданный nginx’у
-```
-kubectl get svc
-```
-
-Add the elastic helm charts repo
-```
-helm repo add elastic https://helm.elastic.co
-helm fetch --untar elastic/elasticsearch --version 7.2.0
-```
-Install it
-helm install --name elasticsearch elastic/elasticsearch --version 7.2.0
-
 
 ### Ссылки на приложение и служебные сервисы
 * http://nginx.weisdd.space - ui для бота;
