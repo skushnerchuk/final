@@ -1,0 +1,34 @@
+---
+elasticsearch:
+  service:
+  dbInternalPort: 9200
+  transportInternalPort: 9300
+
+  image:
+  name: k8s.gcr.io/elasticsearch
+  tag: v5.6.4
+
+  elasticsearch:
+    storageSize:
+
+fluentd:
+  service:
+  dbInternalPort: 9200
+
+  image:
+  name: gcr.io/google-containers/fluentd-elasticsearch
+  tag: v2.0.2
+
+  esHost: "efk-elasticsearch"
+
+kibana:
+  image:
+    repository: "kibana"
+    tag: "5.4.3"
+  ingress:
+    enabled: true
+    hosts: 
+      - kibana
+      - kibana.weisdd.space
+  env:
+    ELASTICSEARCH_URL: http://efk-elasticsearch:9200

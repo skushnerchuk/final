@@ -40,5 +40,7 @@ spec:
               value: {{ .Values.rabbitmqPassword }}
             - name: URL
               value: {{ .Values.botUrl }}
+            - name: CHECK_INTERVAL
+              value: {{ .Values.botCheckInterval | default "120" | quote }}
             - name: EXCLUDE_URLS
               value: {{ .Values.botExcludeUrls | default ".*github.com" | quote }}

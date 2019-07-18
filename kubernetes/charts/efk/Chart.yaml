@@ -1,0 +1,8 @@
+---
+name: efk
+version: 1.0.0
+description: Elastic Fluentd Kibana stack
+maintainers:
+  - name: Babushkin Vladimir
+    email: 4babushkin@gmail.com
+appVersion: 1.0

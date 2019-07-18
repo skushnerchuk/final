@@ -21,3 +21,11 @@ resource "google_dns_record_set" "grafana" {
   ttl          = 300
   rrdatas      = ["${google_dns_record_set.nginx.name}"]
 }
+
+resource "google_dns_record_set" "kibana" {
+  name         = "kibana.${var.domain}"
+  managed_zone = var.managed_zone
+  type         = "CNAME"
+  ttl          = 300
+  rrdatas      = ["${google_dns_record_set.nginx.name}"]
+}

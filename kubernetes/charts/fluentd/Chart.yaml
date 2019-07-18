@@ -1,0 +1,6 @@
+name: fluentd
+version: 0.1.0
+description: fluentd
+maintainers:
+  - name: Babushkin Vladimir
+    email: 4babushkin@gmail.com
