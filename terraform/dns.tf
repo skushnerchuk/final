@@ -29,3 +29,11 @@ resource "google_dns_record_set" "kibana" {
   ttl          = 300
   rrdatas      = ["${google_dns_record_set.nginx.name}"]
 }
+
+resource "google_dns_record_set" "review" {
+  name         = "review.${var.domain}"
+  managed_zone = var.managed_zone
+  type         = "CNAME"
+  ttl          = 300
+  rrdatas      = ["${google_dns_record_set.nginx.name}"]
+}
