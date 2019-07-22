@@ -76,8 +76,7 @@ kubectl get secret default-token-xxxxx -o jsonpath="{['data']['ca\.crt']}" | bas
 где default-token-xxxxx - имя секрета, выдаваемого первой командой.
 
 *Service Token* - токен, используемый для доступа к кластеру. Для его получения необходимо:
-* создайте файл *gitlab-admin-service-account.yaml* с содержимым
-
+* создайте файл *sa.yaml* с содержимым
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -98,9 +97,8 @@ subjects:
   name: gitlab-admin
   namespace: kube-system
 ```
-
 Примените этот манифест и получите токен:
 ```bash
-kubectl apply -f gitlab-admin-service-account.yaml
+kubectl apply -f sa.yaml
 kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
 ```
