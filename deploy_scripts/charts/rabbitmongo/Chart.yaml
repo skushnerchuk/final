@@ -1,0 +1,7 @@
+name: rabbitmongo
+version: 1.0.0
+description: Helm chart mongo + rabbitmq
+maintainers: 
+  - name: Babushkin Vladimir
+    email: 4babushkin@gmail.com
+appVersion: 1.0
