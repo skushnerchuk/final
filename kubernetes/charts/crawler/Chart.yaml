@@ -1,6 +1,6 @@
-name: rabbitmongo
+name: crawler
 version: 1.0.0
-description: Helm chart mongo + rabbitmq
+description: Helm chart for Kubernetes OTUS project
 maintainers: 
   - name: Babushkin Vladimir
     email: 4babushkin@gmail.com
