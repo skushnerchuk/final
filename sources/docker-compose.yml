@@ -3,7 +3,7 @@ version: '3'
 services:
 
   crawler:
-    build: ./search_engine_crawler
+    build: ./crawler
     container_name: crawler
     depends_on:
       - rabbitmq
@@ -19,14 +19,13 @@ services:
       EXCLUDE_URLS: ".*github.com"
 
   ui:
-    build: ./search_engine_ui
+    build: ./crawler_ui
     container_name: crawler_ui
     environment:
       MONGO: mongodb
       MONGO_PORT: 27017
     ports:
       - "8000:8000"
-
 
   rabbitmq:
     image: rabbitmq:3.8-rc

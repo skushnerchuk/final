@@ -2,7 +2,7 @@
 # Для развертывания приложения в кластере используется штатная интеграция GitLab с Kubernetes
 #
 
-image: alpine:latest
+image: alpine:3.10.1
 
 stages:
   - test
@@ -14,14 +14,14 @@ stages:
 variables:
   CLOUD_SDK_IMAGE: drcoyote/gitlab_utils:0.1
 
-Test UI:
+Test engine:
   stage: test
   image: python:3.6.4-jessie
   script:
     - pip install -r requirements.txt -r requirements-test.txt
     - python -m unittest discover -s tests/
     - coverage run -m unittest discover -s tests/
-    - coverage report --include ui/ui.py
+    - coverage report --include crawler/crawler.py
   only:
     - branches
 
@@ -52,10 +52,10 @@ Review:
     - prepare_namespace
     - deploy
   variables:
-    KUBE_NAMESPACE: review-$CI_PROJECT_PATH_$CI_COMMIT_REF_NAME
+    KUBE_NAMESPACE: review-bot-$CI_PROJECT_PATH_$CI_COMMIT_REF_NAME
     HOST: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   environment:
-    name: review/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
+    name: review-bot-/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
     url: https://$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
     on_stop: Stop review
   when: manual
@@ -69,12 +69,12 @@ Stop review:
   stage: cleanup
   variables:
     GIT_STRATEGY: none
-    KUBE_NAMESPACE: review-$CI_PROJECT_PATH_$CI_COMMIT_REF_NAME
+    KUBE_NAMESPACE: review-bot-$CI_PROJECT_PATH_$CI_COMMIT_REF_NAME
   script:
     - auth
     - delete_namespace
   environment:
-    name: review/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
+    name: review-bot/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
     action: stop
   when: manual
   allow_failure: true
@@ -84,21 +84,18 @@ Stop review:
     kubernetes: active
 
 #
-# При работе с боевым контуром мы разворачиваем только
-# интерфейсный компонент
+# При работе с боевым контуром мы разворачиваем только бота
 #
 Deploy (production):
   stage: production
   image: $CLOUD_SDK_IMAGE
   variables:
     KUBE_NAMESPACE: default
-    HOST: nginx.$KUBE_INGRESS_BASE_DOMAIN
   script:
     - auth
     - deploy
   environment:
     name: production
-    url: https://nginx.$KUBE_INGRESS_BASE_DOMAIN
   when: manual
   only:
     refs:
@@ -120,7 +117,7 @@ Deploy (production):
   }
 
   function build() {
-    echo "Building crawler ui docker image..."
+    echo "Building crawler engine docker image..."
     echo `git show --format="%h" HEAD | head -1` > build_info.txt
     echo `git rev-parse --abbrev-ref HEAD` >> build_info.txt
     docker build -t "$CI_IMAGE:$CI_IMAGE_TAG" -t "$CI_IMAGE:latest" .
@@ -153,18 +150,15 @@ Deploy (production):
   }
 
   #
-  # Развертывание
+  # Развертывание движка поиска
   #
   function deploy() {
     track="${1-stable}"
     mongo_host=rm-mongodb
     rq_host=rm-rabbitmq
-    name=ui
-
+    name=bot
     git clone https://$CI_CREDENTIALS@gitlab.sk-developer.ru/otus/deploy-scripts.git charts
-
     helm init --client-only
-
     if [[ "$KUBE_NAMESPACE" != "default" ]]; then
       name="$CI_ENVIRONMENT_SLUG"
       if [[ "$track" != "stable" ]]; then
@@ -182,9 +176,14 @@ Deploy (production):
       helm upgrade --install --wait --recreate-pods bot-"$name" charts/bot --namespace="$KUBE_NAMESPACE" \
                    --set mongodbHost=$mongo_host --set rabbitmqHost=$rq_host
     fi
-    helm upgrade --install --wait --recreate-pods --set $CI_PROJECT_NAME.image.tag=$CI_IMAGE_TAG \
-                 --set $name.ingress.host=$HOST $name charts/ui --namespace="$KUBE_NAMESPACE" \
-                 --set mongodbHost=$mongo_host
+    helm upgrade --install \
+                 --wait \
+                 --recreate-pods \
+                 --set $CI_PROJECT_NAME.image.tag=$CI_IMAGE_TAG \
+                 --set mongodbHost=$mongo_host \
+                 --set rabbitmqHost=$rq_host
+                 $name charts/ui \
+                 --namespace="$KUBE_NAMESPACE" \
   }
 
 before_script:
