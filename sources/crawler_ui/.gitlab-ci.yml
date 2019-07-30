@@ -70,6 +70,7 @@ Stop review:
   variables:
     GIT_STRATEGY: none
     KUBE_NAMESPACE: review-$CI_PROJECT_PATH_$CI_COMMIT_REF_NAME
+    HOST: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   script:
     - auth
     - delete_namespace
@@ -140,10 +141,14 @@ Deploy (production):
   function auth() {
     echo $CI_SERVICE_ACCOUNT | base64 -d > sa.json
     gcloud auth activate-service-account --key-file sa.json
-    gcloud container clusters get-credentials finalapp-cluster --zone europe-west1-b --project docker-239201
+    gcloud container clusters get-credentials $CI_CLUSTER_NAME --zone $CI_CLUSTER_ZONE --project $CI_GC_PROJECT
   }
 
   function delete_namespace() {
+    gcloud dns record-sets transaction start --zone="crawler" --project $CI_GC_PROJECT || true
+    gcloud dns record-sets transaction remove --zone="crawler" --name="$HOST." \
+          --type=CNAME --ttl=300 "nginx.weisdd.space." --project $CI_GC_PROJECT || true
+    gcloud dns record-sets transaction execute --zone="crawler" --project $CI_GC_PROJECT || true
     helm ls --all --short --namespace $KUBE_NAMESPACE | xargs helm delete --purge || true
     kubectl delete ns $KUBE_NAMESPACE || true
   }
@@ -179,6 +184,10 @@ Deploy (production):
       helm upgrade --install --wait --recreate-pods bot-"$name" charts/bot --namespace="$KUBE_NAMESPACE" \
                    --set mongodbHost=$mongo_host --set rabbitmqHost=$rq_host
     fi
+    gcloud dns record-sets transaction start --zone="crawler" --project $CI_GC_PROJECT
+    gcloud dns record-sets transaction add --zone="crawler" --name="$HOST." \
+          --type=CNAME --ttl=300 "nginx.weisdd.space." --project $CI_GC_PROJECT
+    gcloud dns record-sets transaction execute --zone="crawler" --project $CI_GC_PROJECT
     helm upgrade --install \
                  --wait \
                  --recreate-pods \
