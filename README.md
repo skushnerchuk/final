@@ -44,7 +44,6 @@ helm upgrade bot charts/bot --install --set mongodbHost=rm-mongodb --set rabbitm
 ```
 ### Ссылки на приложение и служебные сервисы
 * http://nginx.weisdd.space - production-ui для бота;
-* http://review.weisdd.space - ui для тестирования бота;
 * http://grafana.weisdd.space - grafana;
 * http://prometheus-server.weisdd.space - prometheus.
 
@@ -79,6 +78,7 @@ kubectl get secret default-token-xxxxx -o jsonpath="{['data']['ca\.crt']}" | bas
 
 *Service Token* - токен, используемый для доступа к кластеру. Для его получения необходимо:
 * создайте файл *sa.yaml* с содержимым
+
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -104,6 +104,9 @@ subjects:
 kubectl apply -f sa.yaml
 kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
 ```
+
+Поле **namespace** заполнять не Надо
+
 ### Схема и принципы разввертывания компонентов приложения
 
 Мы исходим из предположения, что за каждый компонент приложения отвечает отдельная команда, а значит
@@ -118,3 +121,16 @@ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | gre
 ![](/screenshots/2.png)
 
 ![](/screenshots/3.png)
+
+Надо создать проекты:
+
+* crawler - для бота
+* crawler_ui - для его интерфейса
+* deploy_scripts - для чартов разввертывания
+
+В проектах **crawler** и **crawler_ui** следует изменить ссылку на репозитарий чартов в команде
+```bash
+git clone https://$CI_CREDENTIALS@gitlab.sk-developer.ru/otus/deploy-scripts.git charts
+```
+После отправки обновлений в репозитарий бота (или его UI) сборка и тестирование компонента
+выполняется автоматически. Развертывание в review и production выполняется вручную из pipeline коммита.
