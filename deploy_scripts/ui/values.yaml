@@ -1,24 +1,24 @@
 ---
 replicaCount: 1
 image:
-  repository: drcoyote/crawler
+  repository: drcoyote/crawler_ui
   tag: latest
+  pullPolicy: Always
 service:
-  name: bot
+  name: ui
+  type: NodePort
+  externalPort: 8000
+  internalPort: 8000
 
 # Database host configuration
 mongodbHost:
 # Database port configuration
-mongodbPort: 27017
+mongodbPort:
 
-# rabbitmq host configuration
-rabbitmqHost:
-rabbitmqQueue: crawler
-rabbitmqUsername: rabbitmq
-rabbitmqPassword: rabbitmq
-botUrl: "https://vitkhab.github.io/search_engine_test_site/"
-botExcludeUrls: ".*github.com"
-botCheckInterval: 300
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
