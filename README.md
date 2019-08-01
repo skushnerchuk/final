@@ -47,6 +47,7 @@ helm upgrade bot charts/bot --install --set mongodbHost=rm-mongodb --set rabbitm
 * http://nginx.weisdd.space - production-ui для бота;
 * http://grafana.weisdd.space - grafana;
 * http://prometheus-server.weisdd.space - prometheus.
+* http://kibana.weisdd.space/ - Kibana
 
 ### Остановка проекта
 ```bash
