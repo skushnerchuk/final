@@ -8,9 +8,13 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host | default .Release.Name }}
+    secretName: testsecret-tls
   rules:
   - host: {{ .Values.ingress.host | default .Release.Name }}
-  - http:
+    http:
       paths:
         - path: /
           backend:

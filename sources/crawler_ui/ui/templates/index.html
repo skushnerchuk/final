@@ -6,7 +6,7 @@
         body, html {
             height: 100%;
         }
-        input { 
+        input {
             font-size: 24px;
         }
         input[type=submit] {
@@ -25,6 +25,9 @@
         </style>
     </head>
     <body>
+        <div align=left>
+        Deployed with GitLab, last version
+        </div>
         <div align=left class="search">
             <form action="/" method="get" style="vertical-align: bottom">
                 <input type="text" name="query" size="80" value="{{request.args.get('query', '')}}">

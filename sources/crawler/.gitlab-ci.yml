@@ -1,0 +1,211 @@
+image: alpine:3.10.1
+
+stages:
+  - test
+  - build
+  - review
+  - cleanup
+  - production
+
+variables:
+  CLOUD_SDK_IMAGE: drcoyote/gitlab_utils:0.1
+
+Test engine:
+  stage: test
+  image: python:3.6.4-jessie
+  script:
+    - pip install -r requirements.txt -r requirements-test.txt
+    - python -m unittest discover -s tests/
+    - coverage run -m unittest discover -s tests/
+    - coverage report --include crawler/crawler.py
+  only:
+    - branches
+
+Build & push:
+  stage: build
+  image: docker:git
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - build
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  only:
+    - branches
+
+Review:
+  stage: review
+  image: $CLOUD_SDK_IMAGE
+  script:
+    - auth
+    - delete_namespace
+    - prepare_namespace
+    - deploy
+  variables:
+    KUBE_NAMESPACE: review-bot-$CI_COMMIT_REF_SLUG
+    RELEASE: bot-$CI_COMMIT_REF_SLUG
+    HOST: bot-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  environment:
+    name: review-bot/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
+    url: https://bot-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: Stop review
+  when: manual
+  only:
+    refs:
+      - branches
+    kubernetes: active
+
+Stop review:
+  image: $CLOUD_SDK_IMAGE
+  stage: cleanup
+  variables:
+    GIT_STRATEGY: none
+    RELEASE: bot-$CI_COMMIT_REF_SLUG
+    KUBE_NAMESPACE: review-bot-$CI_COMMIT_REF_SLUG
+    HOST: bot-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  script:
+    - auth
+    - delete_namespace
+  environment:
+    name: review-bot/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+  allow_failure: true
+  only:
+    refs:
+      - branches
+    kubernetes: active
+
+Create release:
+  stage: production
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - make_release
+  when: manual
+  only:
+    - master
+
+Deploy:
+  stage: production
+  image: $CLOUD_SDK_IMAGE
+  variables:
+    KUBE_NAMESPACE: default
+    HOST: nginx.$KUBE_INGRESS_BASE_DOMAIN
+    RELEASE: bot-ui
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - auth
+    - deploy
+  environment:
+    name: production
+    url: https://nginx.$KUBE_INGRESS_BASE_DOMAIN
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+
+.auto_devops: &auto_devops |
+  set -xe
+  export CI_REGISTRY="index.docker.io"
+  export CI_IMAGE=$CI_REGISTRY/$CI_REGISTRY_USER/$CI_PROJECT_NAME
+  export CI_IMAGE_TAG=$CI_COMMIT_REF_SLUG
+
+  function setup_docker() {
+    if ! docker info &>/dev/null; then
+      if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+        export DOCKER_HOST='tcp://localhost:2375'
+      fi
+    fi
+  }
+
+  function build() {
+    echo "Building crawler bot docker image..."
+    echo `git show --format="%h" HEAD | head -1` > build_info.txt
+    echo `git rev-parse --abbrev-ref HEAD` >> build_info.txt
+    docker build -t "$CI_IMAGE:$CI_IMAGE_TAG" .
+
+    if [[ -n "$CI_REGISTRY_USER" ]]; then
+      echo "Logging to container registry..."
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+      echo ""
+    fi
+
+    echo "Pushing image to container registry..."
+    docker push "$CI_IMAGE:$CI_IMAGE_TAG"
+    echo ""
+  }
+
+  function auth() {
+    echo $CI_SERVICE_ACCOUNT | base64 -d > sa.json
+    gcloud auth activate-service-account --key-file sa.json
+    gcloud container clusters get-credentials $CI_CLUSTER_NAME --zone $CI_CLUSTER_ZONE --project $CI_GC_PROJECT
+  }
+
+  function delete_review_dns() {
+    gcloud dns record-sets transaction start --zone="crawler" --project $CI_GC_PROJECT || true
+    gcloud dns record-sets transaction remove --zone="crawler" --name="$HOST." --type=CNAME --ttl=300 "nginx.weisdd.space." --project $CI_GC_PROJECT || true
+    gcloud dns record-sets transaction execute --zone="crawler" --project $CI_GC_PROJECT || true
+  }
+
+  function create_review_dns() {
+    gcloud dns record-sets transaction start --zone="crawler" --project $CI_GC_PROJECT || true
+    gcloud dns record-sets transaction add --zone="crawler" --name="$HOST." --type=CNAME --ttl=300 "nginx.weisdd.space." --project $CI_GC_PROJECT || true
+    gcloud dns record-sets transaction execute --zone="crawler" --project $CI_GC_PROJECT || true
+  }
+
+  function delete_namespace() {
+    helm ls --all --short --namespace $KUBE_NAMESPACE | xargs helm delete --purge || true
+    kubectl delete ns $KUBE_NAMESPACE || true
+    delete_review_dns
+  }
+
+  function prepare_namespace() {
+    kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+  }
+
+  function deploy() {
+      image_tag=$(cat VERSION)
+      mongo_host=rm-mongodb
+      rq_host=rm-rabbitmq
+      name=$RELEASE
+      git clone https://$CI_CREDENTIALS@gitlab.sk-developer.ru/otus/deploy-scripts.git charts
+      helm init --client-only
+      if [[ "$KUBE_NAMESPACE" != "default" ]]; then
+          delete_review_dns
+          create_review_dns
+          image_tag=$CI_IMAGE_TAG
+          mongo_host=rm-$name-mongodb
+          rq_host=rm-$name-rabbitmq
+          helm dep update charts/rabbitmongo
+          helm install --name rm-$name charts/rabbitmongo --namespace="$KUBE_NAMESPACE"
+          helm install --set mongodbHost=$mongo_host,rabbitmqHost=$rq_host --name bot-$name charts/bot --namespace="$KUBE_NAMESPACE"
+          helm upgrade --install --version=$image_tag --recreate-pods --set image.tag=$(cat VERSION_UI),ingress.host=$HOST,mongodbHost=$mongo_host $name charts/ui --namespace="$KUBE_NAMESPACE"
+      fi
+      helm upgrade --install \
+           --set mongodbHost=$mongo_host,rabbitmqHost=$rq_host,image.tag=$image_tag \
+           $name charts/bot --namespace="$KUBE_NAMESPACE"
+  }
+
+  function make_release() {
+    echo "Updating docker images ..."
+    if [[ -n "$CI_REGISTRY_USER" ]]; then
+      echo "Logging to GitLab Container Registry with CI credentials..."
+       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+      echo ""
+    fi
+    docker pull "$CI_IMAGE:$CI_IMAGE_TAG"
+    docker tag "$CI_IMAGE:$CI_IMAGE_TAG" "$CI_IMAGE:$(cat VERSION)"
+    docker push "$CI_IMAGE:$(cat VERSION)"
+    echo ""
+  }
+
+before_script:
+  - *auto_devops
