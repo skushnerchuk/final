@@ -40,8 +40,8 @@ helm dep update efk/
 helm upgrade efk efk/ --install
 helm dep update rabbitmongo/
 helm upgrade rm rabbitmongo/ --install
-helm upgrade ui ui/ --install --set mongodbHost=rm-mongodb
-helm upgrade bot bot/ --install --set mongodbHost=rm-mongodb --set rabbitmqHost=rm-rabbitmq
+helm upgrade --install --set ingress.host=nginx.weisdd.space,mongodbHost=rm-mongodb ui ui
+helm upgrade --install --set mongodbHost=rm-mongodb,rabbitmqHost=rm-rabbitmq bot bot
 ```
 ### Ссылки на приложение и служебные сервисы
 * http://nginx.weisdd.space - production-ui для бота;

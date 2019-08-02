@@ -2,7 +2,7 @@
 replicaCount: 1
 image:
   repository: drcoyote/crawler
-  tag: latest
+  tag: 0.2.0
   pullPolicy: Always
 service:
   name: bot
