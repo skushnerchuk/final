@@ -34,14 +34,14 @@ cd terraform
 terraform init
 terraform apply
 cd ../deploy_scripts/
-helm upgrade prometheus charts/prometheus/ --install
-helm upgrade grafana charts/grafana/ --install
-helm dep update charts/efk
-helm upgrade efk charts/efk/ --install
-helm dep update charts/rabbitmongo
-helm upgrade rm charts/rabbitmongo --install
-helm upgrade ui charts/ui --install --set mongodbHost=rm-mongodb
-helm upgrade bot charts/bot --install --set mongodbHost=rm-mongodb --set rabbitmqHost=rm-rabbitmq
+helm upgrade prometheus prometheus/ --install
+helm upgrade grafana grafana/ --install
+helm dep update efk/
+helm upgrade efk efk/ --install
+helm dep update rabbitmongo/
+helm upgrade rm rabbitmongo/ --install
+helm upgrade ui ui/ --install --set mongodbHost=rm-mongodb
+helm upgrade bot bot/ --install --set mongodbHost=rm-mongodb --set rabbitmqHost=rm-rabbitmq
 ```
 ### Ссылки на приложение и служебные сервисы
 * http://nginx.weisdd.space - production-ui для бота;
