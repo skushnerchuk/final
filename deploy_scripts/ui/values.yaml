@@ -2,7 +2,7 @@
 replicaCount: 1
 image:
   repository: drcoyote/crawler_ui
-  tag: latest
+  tag: 0.1.0
   pullPolicy: Always
 service:
   name: ui
